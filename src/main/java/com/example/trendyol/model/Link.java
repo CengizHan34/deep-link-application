@@ -13,9 +13,9 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "test")
+@Document(indexName = "link")
 @EqualsAndHashCode(of = {"id"})
-public class Test implements Serializable {
+public class Link implements Serializable {
     @Id
     private String id;
     private String deepLink;
