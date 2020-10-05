@@ -27,9 +27,17 @@ public class LinkController {
         this.linkService = linkService;
     }
 
-    @PostMapping
+    @PostMapping("/deeplink")
     public ResponseEntity convertToDeeplink(@Valid @RequestBody LinkRequestModel linkRequestModel) {
         logger.info("LinkController :: convertToDeeplink :: URL > {}", linkRequestModel.getUrl());
         return ResponseEntity.status(HttpStatus.OK).body(linkService.convertToDeeplink(linkRequestModel));
     }
+
+    @PostMapping("/weblink")
+    public ResponseEntity convertToWebLink(@Valid @RequestBody LinkRequestModel linkRequestModel) {
+        logger.info("LinkController :: convertToWebLink :: URL > {}", linkRequestModel.getUrl());
+        return ResponseEntity.status(HttpStatus.OK).body(linkService.convertToWebLink(linkRequestModel));
+    }
+
+
 }
