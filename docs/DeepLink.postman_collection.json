@@ -1,213 +1,213 @@
 {
-	"info": {
-		"_postman_id": "4fa000a6-9835-4633-a855-fb21b65a73d5",
-		"name": "DeepLink",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "All Parametters",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/saat-p-1925865?boutiqueId=439892&amp;merchantId=105064\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8090/api/link/deeplink",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"link",
-						"deeplink"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ContentId",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/erkek-kol-saati-p-1925865\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8090/api/link/deeplink",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"link",
-						"deeplink"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ContentId And CampaignId",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/erkek-kol-saati-p-1925865?boutiqueId=439892\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8090/api/link/deeplink",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"link",
-						"deeplink"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ContentId And MerchantId",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/erkek-kol-saati-p-1925865?merchantId=105064\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8090/api/link/deeplink",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"link",
-						"deeplink"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Search elbise",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"url\" : \"https://www.trendyol.com/tum--urunler?q=elbise\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8090/api/link/deeplink",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"link",
-						"deeplink"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Search %C3%BCt%C3%BC",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"url\" : \"https://www.trendyol.com/tum--urunler?q=%C3%BCt%C3%BC\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8090/api/link/deeplink",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"link",
-						"deeplink"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Home",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"url\" : \"https://www.trendyol.com/Hesabim/Favoriler\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8090/api/link/deeplink",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"link",
-						"deeplink"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"protocolProfileBehavior": {}
+  "info": {
+    "_postman_id": "4fa000a6-9835-4633-a855-fb21b65a73d5",
+    "name": "DeepLink",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "All Parametters",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/saat-p-1925865?boutiqueId=439892&amp;merchantId=105064\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/deeplink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "deeplink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ContentId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/erkek-kol-saati-p-1925865\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/deeplink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "deeplink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ContentId And CampaignId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/erkek-kol-saati-p-1925865?boutiqueId=439892\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/deeplink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "deeplink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ContentId And MerchantId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"https://www.trendyol.com/casio/erkek-kol-saati-p-1925865?merchantId=105064\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/deeplink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "deeplink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search elbise",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"https://www.trendyol.com/tum--urunler?q=elbise\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/deeplink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "deeplink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search %C3%BCt%C3%BC",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"https://www.trendyol.com/tum--urunler?q=%C3%BCt%C3%BC\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/deeplink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "deeplink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Home",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"https://www.trendyol.com/Hesabim/Favoriler\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/deeplink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "deeplink"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "protocolProfileBehavior": {}
 }

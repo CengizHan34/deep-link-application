@@ -3,7 +3,7 @@ package com.example.trendyol.service;
 import com.example.trendyol.dto.LinkRequestModel;
 import com.example.trendyol.dto.LinkResponseModel;
 import com.example.trendyol.enums.Parametters;
-import com.example.trendyol.exception.CheckException;
+import com.example.trendyol.exception.IllegalUrlFormatException;
 import com.example.trendyol.repository.LinkRepository;
 import com.example.trendyol.service.impl.LinkServiceImpl;
 import mockit.Deencapsulation;
@@ -34,7 +34,7 @@ public class LinkServiceTest {
         this.instance = new LinkServiceImpl(linkRepository);
     }
 
-    @Test(expected = CheckException.class)
+    @Test(expected = IllegalUrlFormatException.class)
     public void convertToDeepLink_ifHostnameDoesntComeTrue_shouldThrowRuntimeException() {
         LinkRequestModel linkRequestModel = new LinkRequestModel("www.cengiz.com");
         new MockUp<LinkServiceImpl>() {
@@ -50,7 +50,7 @@ public class LinkServiceTest {
     }
 
     @Test
-    public void convertToLink_ifHostnameDoesComeTrue_ShouldBeReturnLinkRequestModel() {
+    public void convertToDeepLink_ifHostnameDoesComeTrue_ShouldBeReturnLinkRequestModel() {
         LinkRequestModel linkRequestModel = new LinkRequestModel("https://www.trendyol.com/casio/saat-p-1925865?boutiqueId=439892&amp;merchantId=105064");
         new MockUp<LinkServiceImpl>() {
             @Mock(invocations = 1)
@@ -59,7 +59,7 @@ public class LinkServiceTest {
             }
 
             @Mock(invocations = 1)
-            private String createDeepLink(String str) {
+            private String createDeepLinkByType(String str) {
                 return "ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892&amp;MerchantId=105064";
             }
         };
@@ -87,20 +87,6 @@ public class LinkServiceTest {
     }
 
     @Test
-    public void createDeepLink_ifStringTypeIsSent_shouldDeReturnString() {
-        String link = "https://www.trendyol.com/casio/erkek-kol-saati-p-1925865";
-        new MockUp<LinkServiceImpl>() {
-            @Mock(invocations = 1)
-            private String createDeepLinkByLinkType(String str) {
-                return "ty://?Page=Product&amp;ContentId=1925865";
-            }
-        };
-        String result = Deencapsulation.invoke(instance, "createDeepLink", link);
-        assertNotNull(result);
-        assertEquals(result, "ty://?Page=Product&amp;ContentId=1925865");
-    }
-
-    @Test
     public void createDeepLinkByLinkType_ifUrlsOfTypeProduct_createProductDeepLinkShouldWork() {
         String link = "https://www.trendyol.com/casio/erkek-kol-saati-p-1925865";
         new MockUp<LinkServiceImpl>() {
@@ -119,7 +105,7 @@ public class LinkServiceTest {
                 return "";
             }
         };
-        String result = Deencapsulation.invoke(instance, "createDeepLinkByLinkType", link);
+        String result = Deencapsulation.invoke(instance, "createDeepLinkByType", link);
         assertNotNull(result);
         assertEquals(result, "ty://?Page=Product&amp;ContentId=1925865");
     }
@@ -149,13 +135,13 @@ public class LinkServiceTest {
 
             ;
         };
-        String result = Deencapsulation.invoke(instance, "createDeepLinkByLinkType", link);
+        String result = Deencapsulation.invoke(instance, "createDeepLinkByType", link);
         assertNotNull(result);
         assertEquals(result, "ty://?Page=Search&amp;Query=elbise");
     }
 
     @Test
-    public void createDeepLinkByLinkType_ifUrlsOfTypeProduct_createPageDeepLinkShouldWork() {
+    public void createDeepLinkByType_ifUrlsOfTypeProduct_createPageDeepLinkShouldWork() {
         String link = "/Hesabim/Favoriler";
         new MockUp<LinkServiceImpl>() {
             @Mock(invocations = 0)
@@ -173,7 +159,7 @@ public class LinkServiceTest {
                 return "ty://?Page=Home";
             }
         };
-        String result = Deencapsulation.invoke(instance, "createDeepLinkByLinkType", link);
+        String result = Deencapsulation.invoke(instance, "createDeepLinkByType", link);
         assertNotNull(result);
         assertEquals(result, "ty://?Page=Home");
     }
@@ -244,7 +230,7 @@ public class LinkServiceTest {
         assertEquals(stringBuilder.toString(), "&&Cengiz");
     }
 
-    @Test(expected = CheckException.class)
+    @Test(expected = IllegalUrlFormatException.class)
     public void convertToWebLink_ifHostnameDoesntComeTrue_shouldThrowRuntimeException() {
         LinkRequestModel linkRequestModel = new LinkRequestModel("tyyyy://////");
         new MockUp<LinkServiceImpl>() {
@@ -342,7 +328,7 @@ public class LinkServiceTest {
         assertEquals(result, "https://www.trendyol.com");
     }
 
-    @Test(expected = CheckException.class)
+    @Test(expected = IllegalUrlFormatException.class)
     public void checkDeepLink_ifDeepLinkDoesntComeTrue_shouldThrowRuntimeException() {
         String host = "tk://asdasd";
         Deencapsulation.invoke(instance, "checkDeepLink", host);
@@ -354,7 +340,7 @@ public class LinkServiceTest {
     }
 
     @Test
-    public void createSearchWebLink_ifThisMethodIsRun_searchWebLinkMustReturn(){
+    public void createSearchWebLink_ifThisMethodIsRun_searchWebLinkMustReturn() {
         String link = "ty://?Page=Search&amp;Query=elbise";
         String result = Deencapsulation.invoke(instance, "createSearchWebLink", link);
         assertNotNull(result);
@@ -394,29 +380,25 @@ public class LinkServiceTest {
     }
 
     @Test
-    public void replaceAllParametterNames_ifContentIdIsSent_pShouldReturn(){
+    public void replaceAllParametterNames_ifContentIdIsSent_pShouldReturn() {
         String result = Deencapsulation.invoke(instance, "replaceAllParametterNames",
-                Parametters.ContentId.name()+"=");
+                Parametters.ContentId.name() + "=");
         assertNotNull(result);
-        assertEquals(result,"-p-");
+        assertEquals(result, "-p-");
     }
 
     @Test
-    public void replaceAllParametterNames_ifCampaignIdIsSent_boutiqueIdShouldReturn(){
+    public void replaceAllParametterNames_ifCampaignIdIsSent_boutiqueIdShouldReturn() {
         String result = Deencapsulation.invoke(instance, "replaceAllParametterNames",
                 Parametters.CampaignId.name());
         assertNotNull(result);
-        assertEquals(result,"boutiqueId");
+        assertEquals(result, "boutiqueId");
     }
 
     @Test
-    public void replaceAllParametterNames_ifMerchantIdIsSent_pShouldReturn(){
+    public void replaceAllParametterNames_ifMerchantIdIsSent_pShouldReturn() {
         String result = Deencapsulation.invoke(instance, "replaceAllParametterNames", Parametters.MerchantId.name());
         assertNotNull(result);
-        assertEquals(result,"merchantId");
+        assertEquals(result, "merchantId");
     }
-
-
-
-
 }

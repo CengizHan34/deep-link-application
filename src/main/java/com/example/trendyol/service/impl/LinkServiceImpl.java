@@ -4,7 +4,7 @@ import com.example.trendyol.dto.LinkRequestModel;
 import com.example.trendyol.dto.LinkResponseModel;
 import com.example.trendyol.enums.Parametters;
 import com.example.trendyol.enums.ProcessType;
-import com.example.trendyol.exception.CheckException;
+import com.example.trendyol.exception.IllegalUrlFormatException;
 import com.example.trendyol.model.Link;
 import com.example.trendyol.repository.LinkRepository;
 import com.example.trendyol.service.LinkService;
@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.trendyol.constants.Patterns.*;
+import static com.example.trendyol.constants.Patterns.ByProduct;
+import static com.example.trendyol.constants.Patterns.BySearch;
 import static com.example.trendyol.constants.Url.*;
 
 /**
@@ -36,24 +38,28 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     public LinkResponseModel convertToDeeplink(LinkRequestModel linkRequestModel) {
-        String deepLink = "";
         logger.info("LinkServiceImpl :: convertToDeeplink :: URL > {}", linkRequestModel.getUrl());
         String link = "";
+
         try {
             URL url = new URL(linkRequestModel.getUrl());
             checkHost(url.getHost());
             link = url.getFile();
         } catch (MalformedURLException e) {
             logger.error(e.getMessage());
-            throw new CheckException(e.getMessage());
+            throw new IllegalUrlFormatException(e.getMessage());
         }
 
-        deepLink = createDeepLink(link);
+        String deepLink = createDeepLinkByType(link);
         LinkResponseModel linkResponseModel = LinkResponseModel.builder().url(deepLink).build();
         logger.info("LinkServiceImpl :: convertToDeeplink :: DEEPLINK > {}", linkResponseModel.getUrl());
 
-        Link linkModel = Link.builder().id(UUID.randomUUID().toString()).webLink(linkRequestModel.getUrl())
-                .deepLink(deepLink).processType(ProcessType.CONVERT_TO_DEEPLINK.name())
+        Link linkModel = Link.builder()
+                .id(UUID.randomUUID().toString())
+                .webLink(linkRequestModel.getUrl())
+                .deepLink(deepLink)
+                .processType(ProcessType.CONVERT_TO_DEEPLINK.name())
+                .createdDate(new Date())
                 .build();
 
         linkRepository.save(linkModel);
@@ -63,35 +69,29 @@ public class LinkServiceImpl implements LinkService {
 
     private void checkHost(String host) {
         if (!HOST.equalsIgnoreCase(host)) {
-            throw new CheckException("bad hostname!");
+            throw new IllegalUrlFormatException("bad hostname!");
         }
     }
 
-    private String createDeepLink(String link) {
-        return createDeepLinkByLinkType(link);
-    }
-
-    private String createDeepLinkByLinkType(String link) {
-        String deepLink = "";
-        if (link.contains(PRODUCT)) {
-            deepLink = createProductDeepLink(link);
-        } else if (link.contains(SEARCH)) {
-            deepLink = createSearchDeepLink(link);
+    private String createDeepLinkByType(String link) {
+        if (link.contains(ByProduct.PRODUCT)) {
+            return createProductDeepLink(link);
+        } else if (link.contains(BySearch.SEARCH)) {
+            return createSearchDeepLink(link);
         } else {
-            deepLink = createPageDeepLink();
+            return createPageDeepLink();
         }
-        return deepLink;
     }
 
     private String createPageDeepLink() {
-        StringBuilder linkBuilder = new StringBuilder(PREFIX_DEEPLINK).append("Home");
+        StringBuilder linkBuilder = new StringBuilder(PREFIX_DEEPLINK).append(HOME);
         logger.info("createPageDeepLink :: created page deeplink : {}", linkBuilder.toString());
         return linkBuilder.toString();
     }
 
     private String createSearchDeepLink(String link) {
-        StringBuilder linkBuilder = new StringBuilder(PREFIX_DEEPLINK).append("Search").append("&amp;");
-        Pattern pattern = Pattern.compile(SEARCH_DEEPLINK_PATTERN);
+        StringBuilder linkBuilder = new StringBuilder(PREFIX_DEEPLINK).append(SEARCH).append("&amp;");
+        Pattern pattern = Pattern.compile(BySearch.SEARCH_DEEPLINK_PATTERN);
         Matcher matcher = pattern.matcher(link);
         while (matcher.find()) {
             linkBuilder.append(QUERY).append("=").append(matcher.group(1));
@@ -100,13 +100,9 @@ public class LinkServiceImpl implements LinkService {
         return linkBuilder.toString();
     }
 
-    private String makeTheFirstLetterLowercase(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
-
     private String createProductDeepLink(String link) {
         StringBuilder linkBuilder = new StringBuilder(PREFIX_DEEPLINK).append(PREFIX_PRODUCT);
-        Pattern pattern = Pattern.compile(PRODUCT_DEEPLINK_PATTERN);
+        Pattern pattern = Pattern.compile(ByProduct.PRODUCT_DEEPLINK_PATTERN);
         link = link
                 .replace(Parametters.BoutiqueId.getValue(), Parametters.CampaignId.name())
                 .replace(Parametters.MerchantId.getValue(), Parametters.MerchantId.name());
@@ -134,17 +130,24 @@ public class LinkServiceImpl implements LinkService {
         logger.info("LinkServiceImpl :: convertToWebLink :: URL > {}", linkRequestModel.getUrl());
         checkDeepLink(linkRequestModel.getUrl());
         webLink = createWebLinkByLinkType(linkRequestModel.getUrl());
+
         LinkResponseModel linkResponseModel = LinkResponseModel.builder().url(webLink).build();
-        Link linkModel = Link.builder().id(UUID.randomUUID().toString()).webLink(linkRequestModel.getUrl())
-                .deepLink(webLink).processType(ProcessType.CONVERT_TO_WEBLINK.name())
+
+        Link linkModel = Link.builder()
+                .id(UUID.randomUUID().toString())
+                .webLink(linkRequestModel.getUrl())
+                .deepLink(webLink)
+                .processType(ProcessType.CONVERT_TO_WEBLINK.name())
+                .createdDate(new Date())
                 .build();
+
         linkRepository.save(linkModel);
         logger.info("link model saved successfully. ID : {}", linkModel.getId());
         return linkResponseModel;
     }
 
     private String createWebLinkByLinkType(String url) {
-        StringBuilder webLinkBuilder = new StringBuilder(createTrendyolLink());
+        StringBuilder webLinkBuilder = createTrendyolLink();
         if (url.contains(PREFIX_PRODUCT)) {
             webLinkBuilder.append(createProdcutWebLink(url));
         } else if (url.contains(PREFIX_SEARCH)) {
@@ -155,14 +158,14 @@ public class LinkServiceImpl implements LinkService {
 
     private void checkDeepLink(String url) {
         if (!url.startsWith(PREFIX_DEEPLINK)) {
-            throw new CheckException("");
+            throw new IllegalUrlFormatException("Deeplink not found!");
         }
     }
 
     private String createSearchWebLink(String url) {
         String searchLink = "";
         StringBuilder seachLinkBuilder = new StringBuilder();
-        Pattern pattern = Pattern.compile(SEARCH_WEBLINK_PATTERN);
+        Pattern pattern = Pattern.compile(BySearch.SEARCH_WEBLINK_PATTERN);
         Matcher matcher = pattern.matcher(url);
         while (matcher.find()) {
             fillLinkBuilder(matcher.group(1), "", seachLinkBuilder);
@@ -173,16 +176,16 @@ public class LinkServiceImpl implements LinkService {
         return searchLink;
     }
 
-    private String createTrendyolLink() {
+    private StringBuilder createTrendyolLink() {
         StringBuilder linkBuilder = new StringBuilder();
         linkBuilder.append(HTTPS).append(HOST);
-        return linkBuilder.toString();
+        return linkBuilder;
     }
 
     private String createProdcutWebLink(String url) {
         String productWebLink = "";
         StringBuilder linkBuilder = new StringBuilder();
-        Pattern pattern = Pattern.compile(PRODUCT_WEBLINK_PATTERN);
+        Pattern pattern = Pattern.compile(ByProduct.PRODUCT_WEBLINK_PATTERN);
         Matcher matcher = pattern.matcher(url);
 
         while (matcher.find()) {
@@ -200,7 +203,7 @@ public class LinkServiceImpl implements LinkService {
     private String replaceAllParametterNames(String url) {
         String contentId = Parametters.ContentId.name() + "=";
         return url.replace(contentId, "-p-")
-                .replace(Parametters.CampaignId.name(), "boutiqueId")
-                .replace(Parametters.MerchantId.name(), "merchantId");
+                .replace(Parametters.CampaignId.name(), Parametters.BoutiqueId.getValue())
+                .replace(Parametters.MerchantId.name(), Parametters.MerchantId.getValue());
     }
 }

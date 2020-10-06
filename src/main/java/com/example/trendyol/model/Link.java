@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author created by cengizhan on 3.10.2020
@@ -21,5 +22,7 @@ public class Link implements Serializable {
     private String deepLink;
     private String webLink;
     private String processType;
+    private Date createdDate;
+
 
 }

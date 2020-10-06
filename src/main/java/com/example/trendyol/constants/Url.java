@@ -16,4 +16,6 @@ public class Url {
     public static String PREFIX_SEARCH = "Search&amp;";
 
     public static String QUERY = "Query";
+    public static String SEARCH = "Search";
+    public static String HOME = "Home";
 }
