@@ -1,5 +1,6 @@
-package com.example.trendyol.exception;
+package com.example.trendyol.exception.handler;
 
+import com.example.trendyol.exception.IllegalUrlFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  */
 @ControllerAdvice
 public class ExcptionHandler {
-    @ExceptionHandler(value = {CheckException.class})
+    @ExceptionHandler(value = {IllegalUrlFormatException.class})
     public ResponseEntity checkExceptionHandler() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("the url sent is incorrect");
     }

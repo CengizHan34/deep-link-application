@@ -13,11 +13,33 @@ services:
   #      - my-db:/var/lib/mysql
   elasticsearch:
     image: elasticsearch:6.8.5
+    restart: always
+    container_name: elasticsearch
     ports:
       - 9200:9200
       - 9300:9300
     environment:
       discovery.type: single-node
+    networks:
+      - elk1
+
+
+  trendyol:
+    image: trendyol:0.0.1
+    restart: always
+    container_name: trendyol-app
+    ports:
+      - 8090:8090
+    environment:
+      ELK_NODES: elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk1
+
+
+networks:
+  elk1:
 
 #volumes:
 #  my-db:

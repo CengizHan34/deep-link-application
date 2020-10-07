@@ -2,6 +2,8 @@ package com.example.trendyol.service;
 
 import com.example.trendyol.dto.LinkRequestModel;
 import com.example.trendyol.dto.LinkResponseModel;
+import com.example.trendyol.enums.Parametters;
+import com.example.trendyol.exception.IllegalUrlFormatException;
 import com.example.trendyol.repository.LinkRepository;
 import com.example.trendyol.service.impl.LinkServiceImpl;
 import mockit.Deencapsulation;
@@ -32,7 +34,7 @@ public class LinkServiceTest {
         this.instance = new LinkServiceImpl(linkRepository);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalUrlFormatException.class)
     public void convertToDeepLink_ifHostnameDoesntComeTrue_shouldThrowRuntimeException() {
         LinkRequestModel linkRequestModel = new LinkRequestModel("www.cengiz.com");
         new MockUp<LinkServiceImpl>() {
@@ -48,7 +50,7 @@ public class LinkServiceTest {
     }
 
     @Test
-    public void convertToLink_ifHostnameDoesComeTrue_ShouldBeReturnLinkRequestModel() {
+    public void convertToDeepLink_ifHostnameDoesComeTrue_ShouldBeReturnLinkRequestModel() {
         LinkRequestModel linkRequestModel = new LinkRequestModel("https://www.trendyol.com/casio/saat-p-1925865?boutiqueId=439892&amp;merchantId=105064");
         new MockUp<LinkServiceImpl>() {
             @Mock(invocations = 1)
@@ -57,7 +59,7 @@ public class LinkServiceTest {
             }
 
             @Mock(invocations = 1)
-            private String createDeepLink(String str) {
+            private String createDeepLinkByType(String str) {
                 return "ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892&amp;MerchantId=105064";
             }
         };
@@ -85,21 +87,7 @@ public class LinkServiceTest {
     }
 
     @Test
-    public void createDeepLink_ifStringTypeIsSent_shouldDeReturnString() {
-        String link = "https://www.trendyol.com/casio/erkek-kol-saati-p-1925865";
-        new MockUp<LinkServiceImpl>() {
-            @Mock(invocations = 1)
-            private String chooseDeeplinkType(String str) {
-                return "ty://?Page=Product&amp;ContentId=1925865";
-            }
-        };
-        String result = Deencapsulation.invoke(instance, "createDeepLink", link);
-        assertNotNull(result);
-        assertEquals(result, "ty://?Page=Product&amp;ContentId=1925865");
-    }
-
-    @Test
-    public void chooseDeeplinkType_ifUrlsOfTypeProduct_createProductDeepLinkShouldWork() {
+    public void createDeepLinkByLinkType_ifUrlsOfTypeProduct_createProductDeepLinkShouldWork() {
         String link = "https://www.trendyol.com/casio/erkek-kol-saati-p-1925865";
         new MockUp<LinkServiceImpl>() {
             @Mock(invocations = 1)
@@ -117,13 +105,13 @@ public class LinkServiceTest {
                 return "";
             }
         };
-        String result = Deencapsulation.invoke(instance, "chooseDeeplinkType", link);
+        String result = Deencapsulation.invoke(instance, "createDeepLinkByType", link);
         assertNotNull(result);
         assertEquals(result, "ty://?Page=Product&amp;ContentId=1925865");
     }
 
     @Test
-    public void chooseDeeplinkType_ifUrlsOfTypeProduct_createSearchDeepLinkShouldWork() {
+    public void createDeepLinkByLinkType_ifUrlsOfTypeProduct_createSearchDeepLinkShouldWork() {
         String link = "/tum--urunler?q=elbise";
         new MockUp<LinkServiceImpl>() {
             @Mock(invocations = 1)
@@ -147,13 +135,13 @@ public class LinkServiceTest {
 
             ;
         };
-        String result = Deencapsulation.invoke(instance, "chooseDeeplinkType", link);
+        String result = Deencapsulation.invoke(instance, "createDeepLinkByType", link);
         assertNotNull(result);
         assertEquals(result, "ty://?Page=Search&amp;Query=elbise");
     }
 
     @Test
-    public void chooseDeeplinkType_ifUrlsOfTypeProduct_createPageDeepLinkShouldWork() {
+    public void createDeepLinkByType_ifUrlsOfTypeProduct_createPageDeepLinkShouldWork() {
         String link = "/Hesabim/Favoriler";
         new MockUp<LinkServiceImpl>() {
             @Mock(invocations = 0)
@@ -171,7 +159,7 @@ public class LinkServiceTest {
                 return "ty://?Page=Home";
             }
         };
-        String result = Deencapsulation.invoke(instance, "chooseDeeplinkType", link);
+        String result = Deencapsulation.invoke(instance, "createDeepLinkByType", link);
         assertNotNull(result);
         assertEquals(result, "ty://?Page=Home");
     }
@@ -240,5 +228,177 @@ public class LinkServiceTest {
         StringBuilder stringBuilder = new StringBuilder();
         Deencapsulation.invoke(instance, "fillLinkBuilder", "Cengiz", "&&", stringBuilder);
         assertEquals(stringBuilder.toString(), "&&Cengiz");
+    }
+
+    @Test(expected = IllegalUrlFormatException.class)
+    public void convertToWebLink_ifHostnameDoesntComeTrue_shouldThrowRuntimeException() {
+        LinkRequestModel linkRequestModel = new LinkRequestModel("tyyyy://////");
+        new MockUp<LinkServiceImpl>() {
+            @Mock(invocations = 0)
+            private void checkHost(String str) {
+                if (!HOST.equals(str)) {
+                    throw new RuntimeException();
+                }
+            }
+        };
+        LinkResponseModel linkResponseModel = Deencapsulation.invoke(instance, "convertToWebLink", linkRequestModel);
+
+    }
+
+    @Test
+    public void convertToWebLink_ifHostnameDoesComeTrue_ShouldBeReturnLinkRequestModel() {
+        LinkRequestModel linkRequestModel = new LinkRequestModel("ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892&amp;MerchantId=105064");
+        new MockUp<LinkServiceImpl>() {
+            @Mock(invocations = 1)
+            private void checkDeepLink(String str) {
+
+            }
+
+            @Mock(invocations = 1)
+            private String createWebLinkByLinkType(String str) {
+                return "https://www.trendyol.com/brand/name-p-1925865?boutiqueId=439892&amp;merchantId=105064";
+            }
+        };
+        MockUp<LinkRepository> linkRepositoryMockUp = new MockUp<LinkRepository>() {
+            <Link> void save(com.example.trendyol.model.Link link) {
+                System.out.println("success");
+            }
+        };
+        Deencapsulation.setField(instance, "linkRepository", linkRepositoryMockUp.getMockInstance());
+        LinkResponseModel linkResponseModel = Deencapsulation.invoke(instance, "convertToWebLink", linkRequestModel);
+        assertNotNull(linkResponseModel);
+        assertNotNull(linkResponseModel.getUrl());
+        assertEquals("https://www.trendyol.com/brand/name-p-1925865?boutiqueId=439892&amp;merchantId=105064", linkResponseModel.getUrl());
+    }
+
+    @Test
+    public void createWebLinkByLinkType_ifUrlsOfTypeProduct_createProductWebLinkShouldWork() {
+        String link = "ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892";
+        new MockUp<LinkServiceImpl>() {
+            @Mock(invocations = 1)
+            private String createProdcutWebLink(String str) {
+                return "/brand/name-p-1925865?boutiqueId=439892";
+            }
+
+            @Mock(invocations = 0)
+            private String createSearchWebLink(String str) {
+                return "";
+            }
+        };
+        String result = Deencapsulation.invoke(instance, "createWebLinkByLinkType", link);
+        assertNotNull(result);
+        assertEquals(result, "https://www.trendyol.com/brand/name-p-1925865?boutiqueId=439892");
+    }
+
+    @Test
+    public void createWebLinkByLinkType_ifUrlsOfTypeSearch_createSearchDeepLinkShouldWork() {
+        String link = "ty://?Page=Search&amp;Query=elbise";
+        new MockUp<LinkServiceImpl>() {
+            @Mock(invocations = 0)
+            private String createProdcutWebLink(String str) {
+                return "/brand/name-p-1925865?boutiqueId=439892";
+            }
+
+            @Mock(invocations = 1)
+            private String createSearchWebLink(String str) {
+                return "/tum--urunler?q=elbise";
+            }
+        };
+        String result = Deencapsulation.invoke(instance, "createWebLinkByLinkType", link);
+        assertNotNull(result);
+        assertEquals(result, "https://www.trendyol.com/tum--urunler?q=elbise");
+    }
+
+    @Test
+    public void createWebLinkByLinkType_ifThereIsNoUrlType_stringTypeMustReturn() {
+        String link = "ty://?Page=Favorites";
+        new MockUp<LinkServiceImpl>() {
+            @Mock(invocations = 0)
+            private String createProdcutWebLink(String str) {
+                return "";
+            }
+
+            @Mock(invocations = 0)
+            private String createSearchWebLink(String str) {
+                return "";
+            }
+        };
+        String result = Deencapsulation.invoke(instance, "createWebLinkByLinkType", link);
+        assertNotNull(result);
+        assertEquals(result, "https://www.trendyol.com");
+    }
+
+    @Test(expected = IllegalUrlFormatException.class)
+    public void checkDeepLink_ifDeepLinkDoesntComeTrue_shouldThrowRuntimeException() {
+        String host = "tk://asdasd";
+        Deencapsulation.invoke(instance, "checkDeepLink", host);
+    }
+
+    @Test
+    public void checkDeepLink_ifDeepLinkDoesntComeTrue_shouldNotDoAnything() {
+        Deencapsulation.invoke(instance, "checkDeepLink", PREFIX_DEEPLINK);
+    }
+
+    @Test
+    public void createSearchWebLink_ifThisMethodIsRun_searchWebLinkMustReturn() {
+        String link = "ty://?Page=Search&amp;Query=elbise";
+        String result = Deencapsulation.invoke(instance, "createSearchWebLink", link);
+        assertNotNull(result);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("/tum--urunler?q=elbise");
+        assertEquals(stringBuilder.toString(), result);
+    }
+
+    @Test
+    public void createProdcutWebLink_ifAllParametersAreSent_productWebLinkMustReturn() {
+        String link = "ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892&amp;MerchantId=105064";
+        String result = Deencapsulation.invoke(instance, "createProdcutWebLink", link);
+        assertNotNull(result);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("/brand/name-p-1925865?boutiqueId=439892&amp;merchantId=105064");
+        assertEquals(stringBuilder.toString(), result);
+    }
+
+    @Test
+    public void createProdcutWebLink_ifBoutiqueIdIsSent_productWebLinkMustReturn() {
+        String link = "ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892";
+        String result = Deencapsulation.invoke(instance, "createProdcutWebLink", link);
+        assertNotNull(result);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("/brand/name-p-1925865?boutiqueId=439892");
+        assertEquals(stringBuilder.toString(), result);
+    }
+
+    @Test
+    public void createProdcutWebLink_ifMerchantIdIsSent_productDeepLinkMustReturn() {
+        String link = "ty://?Page=Product&amp;ContentId=1925865&amp;MerchantId=105064";
+        String result = Deencapsulation.invoke(instance, "createProdcutWebLink", link);
+        assertNotNull(result);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("/brand/name-p-1925865?merchantId=105064");
+        assertEquals(stringBuilder.toString(), result);
+    }
+
+    @Test
+    public void replaceAllParametterNames_ifContentIdIsSent_pShouldReturn() {
+        String result = Deencapsulation.invoke(instance, "replaceAllParametterNames",
+                Parametters.ContentId.name() + "=");
+        assertNotNull(result);
+        assertEquals(result, "-p-");
+    }
+
+    @Test
+    public void replaceAllParametterNames_ifCampaignIdIsSent_boutiqueIdShouldReturn() {
+        String result = Deencapsulation.invoke(instance, "replaceAllParametterNames",
+                Parametters.CampaignId.name());
+        assertNotNull(result);
+        assertEquals(result, "boutiqueId");
+    }
+
+    @Test
+    public void replaceAllParametterNames_ifMerchantIdIsSent_pShouldReturn() {
+        String result = Deencapsulation.invoke(instance, "replaceAllParametterNames", Parametters.MerchantId.name());
+        assertNotNull(result);
+        assertEquals(result, "merchantId");
     }
 }

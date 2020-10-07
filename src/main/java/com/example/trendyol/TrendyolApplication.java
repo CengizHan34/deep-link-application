@@ -7,6 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TrendyolApplication {
 
     public static void main(String[] args) {
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         SpringApplication.run(TrendyolApplication.class, args);
     }
 

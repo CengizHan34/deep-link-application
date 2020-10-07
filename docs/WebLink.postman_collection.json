@@ -1,0 +1,213 @@
+{
+  "info": {
+    "_postman_id": "fb73c702-082b-42e8-b3d7-70940c295c05",
+    "name": "WebLink",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "All Parametters",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892&amp;MerchantId=105064\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/weblink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "weblink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ContentId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"ty://?Page=Product&amp;ContentId=1925865\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/weblink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "weblink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ContentId And CampaignId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"ty://?Page=Product&amp;ContentId=1925865&amp;CampaignId=439892\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/weblink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "weblink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ContentId And MerchantId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"ty://?Page=Product&amp;ContentId=1925865&amp;MerchantId=105064\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/weblink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "weblink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Query=elbise",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"ty://?Page=Search&amp;Query=elbise\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/weblink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "weblink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Query=%C3%BCt%C3%BC",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"ty://?Page=Search&amp;Query=%C3%BCt%C3%BC\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/weblink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "weblink"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Home",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"url\" : \"ty://?Page=Favorites\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8090/api/link/weblink",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "link",
+            "weblink"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "protocolProfileBehavior": {}
+}

@@ -9,8 +9,17 @@ import com.example.trendyol.dto.LinkResponseModel;
 public interface LinkService {
     /**
      * This method converts web link to deep link.
-     * @param linkRequestModel  contains web link url
+     *
+     * @param linkRequestModel contains web link url
      * @return deeplink url
      */
     LinkResponseModel convertToDeeplink(LinkRequestModel linkRequestModel);
+
+    /**
+     * This method converts deep link tp web link.
+     *
+     * @param linkRequestModel contains web link url
+     * @return deeplink url
+     */
+    LinkResponseModel convertToWebLink(LinkRequestModel linkRequestModel);
 }
