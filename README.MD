@@ -1,4 +1,4 @@
-# Trendyol Link Converter Backend Application
+# Link Converter Backend Application
 
 This application converts submitted urls to deeplink or web link.
 
